@@ -13,34 +13,41 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.DatePicker;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.reiyan.simplenote.R;
 import com.reiyan.simplenote.model.Notes;
 import com.reiyan.simplenote.model.NotesModel;
+import com.reiyan.simplenote.receiver.NotificationHelper;
 
 import java.util.Calendar;
+import java.util.Random;
 
-public class NoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Toolbar toolbar;
     private EditText etTitle, etNote;
     private InputMethodManager inputMethodManager;
     private NotesModel helper;
     private Notes notes;
-    private int id, year, month, day;
+    private int id, year, month, day, hour, minute;
     private AlertDialog.Builder builder;
     private View view;
     private TextView date, time;
+    private Spinner spinnerRepeat;
+    private String[] dummy;
+    private SpinnerAdapter spinnerAdapter;
     private DatePickerDialog datePicker;
     private TimePickerDialog timePicker;
     private Calendar calendar;
     private ConstraintLayout constrainDialog;
+    private boolean repeat;
 
 
     @Override
@@ -56,12 +63,19 @@ public class NoteActivity extends AppCompatActivity {
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         builder = new AlertDialog.Builder(this);
         constrainDialog = findViewById(R.id.constrainDialog);
-        view = LayoutInflater.from(this).inflate(R.layout.dialog_remind, constrainDialog, false);
+
+        dummy = new String[] {
+                "Doesn't Repeat",
+                "Repeat"
+        };
+        spinnerAdapter = new com.reiyan.simplenote.adapter.SpinnerAdapter(this, dummy);
 
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
 
 
         setSupportActionBar(toolbar);
@@ -91,20 +105,40 @@ public class NoteActivity extends AppCompatActivity {
                 Toast.makeText(this, "Pinned", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.remind:
+                view = LayoutInflater.from(this).inflate(R.layout.dialog_remind, constrainDialog, false);
                 date = view.findViewById(R.id.date);
                 time = view.findViewById(R.id.time);
+                spinnerRepeat = view.findViewById(R.id.repeat);
+
+                spinnerRepeat.setAdapter(spinnerAdapter);
+                spinnerRepeat.setSelection(0);
+                spinnerRepeat.setOnItemSelectedListener(this);
+
+                inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),  0);
+
                 builder.setTitle("Add reminder");
                 builder.setCancelable(true);
                 builder.setView(view);
 
-                date.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        datePicker = new DatePickerDialog(NoteActivity.this, (view, year, month, dayOfMonth) -> date.setText(dayOfMonth + " - " + (month + 1) + " - " + year),year, month, day);
-                        datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                        datePicker.show();
-                    }
+                date.setOnClickListener(v -> {
+                    datePicker = new DatePickerDialog(NoteActivity.this, (view, year, month, dayOfMonth) -> {
+                        date.setText(dayOfMonth + " - " + (month + 1) + " - " + year);
+                        date.setTextColor(this.getColor(android.R.color.black));
+                    }, year, month, day);
+                    datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                    datePicker.show();
                 });
+
+                time.setOnClickListener(v -> {
+                    timePicker = new TimePickerDialog(NoteActivity.this, (view, hourOfDay, minute) -> {
+                        time.setText(hourOfDay + "." + minute);
+                        time.setTextColor(this.getColor(android.R.color.black));
+                    }, hour, minute, false);
+                    timePicker.show();
+                });
+
+                builder.setPositiveButton("OK", (dialog, which) -> Toast.makeText(NoteActivity.this, "tanggal " + date.getText().toString() + "\n jam " + time.getText().toString(), Toast.LENGTH_SHORT).show());
+
                 builder.show();
                 break;
             case R.id.done:
@@ -127,4 +161,22 @@ public class NoteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (position){
+            case 0:
+                Toast.makeText(this, "Halo 0", Toast.LENGTH_SHORT).show();
+                NotificationHelper helper = new NotificationHelper(this);
+                helper.getManager().notify(new Random().nextInt(), helper.getNotificationRepeat("halo", "kang akmj").build());
+                break;
+            case 1:
+                Toast.makeText(this, "Halo 1", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

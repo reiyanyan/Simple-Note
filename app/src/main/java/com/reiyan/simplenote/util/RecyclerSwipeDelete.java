@@ -7,6 +7,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.reiyan.simplenote.adapter.RecyclerAdapter;
+import com.reiyan.simplenote.model.Notes;
 import com.reiyan.simplenote.model.NotesModel;
 
 
@@ -14,9 +15,9 @@ public class RecyclerSwipeDelete extends ItemTouchHelper.SimpleCallback {
 
     private RecyclerAdapter adapter;
     private NotesModel model;
+    private Notes recentlyDeleteData;
     private View layout;
     private Snackbar snackbar;
-    int recentylyDeletePostion;
 
     public RecyclerSwipeDelete(RecyclerAdapter adapter, NotesModel model, View layout) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
@@ -32,11 +33,11 @@ public class RecyclerSwipeDelete extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        recentylyDeletePostion = viewHolder.getAdapterPosition();
+        recentlyDeleteData = adapter.getNoteAt(viewHolder.getAdapterPosition());
         model.deleteData(adapter.getNoteAt(viewHolder.getAdapterPosition()));
         adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
         snackbar = Snackbar.make(layout, "Note Deleted ", Snackbar.LENGTH_LONG);
-        snackbar.setAction("UNDO", v -> model.inserData(adapter.getNoteAt(viewHolder.getAdapterPosition())));
+        snackbar.setAction("UNDO", v -> model.inserData(recentlyDeleteData));
         snackbar.show();
     }
 

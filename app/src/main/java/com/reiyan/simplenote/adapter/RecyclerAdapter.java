@@ -1,6 +1,5 @@
 package com.reiyan.simplenote.adapter;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.reiyan.simplenote.R;
 import com.reiyan.simplenote.model.Notes;
-import com.reiyan.simplenote.model.NotesModel;
 import com.reiyan.simplenote.util.RecyclerOnClick;
 
 import java.util.List;
@@ -51,7 +49,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.blueprint, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item, viewGroup, false);
         return new ViewHolder(view);
     }
 

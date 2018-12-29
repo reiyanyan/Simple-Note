@@ -4,9 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import com.reiyan.simplenote.R;
 import com.reiyan.simplenote.adapter.RecyclerAdapter;
@@ -58,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter = new RecyclerAdapter(this, this);
         swipeMe = new RecyclerSwipeDelete(adapter, model,constraintLayout);
         helper = new ItemTouchHelper(swipeMe);
+        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         model.getAllNotes().observe(this, notes -> adapter.setData(notes));
 
-        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
