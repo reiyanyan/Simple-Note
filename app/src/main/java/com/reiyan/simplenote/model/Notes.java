@@ -15,6 +15,8 @@ public class Notes {
 
     private String note;
 
+    private int pin;
+
     @NonNull
     public int getId() {
         return id;
@@ -39,4 +41,8 @@ public class Notes {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public int getPin() { return pin;    }
+
+    public void setPin(int pin) { this.pin = pin;    }
 }

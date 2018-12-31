@@ -47,6 +47,8 @@ public class NotesModel extends AndroidViewModel {
         new delete(noteDao).execute(notes);
     }
 
+    public LiveData<List<Notes>> findByKey(String key){ return noteDao.findByKey(key); }
+
     //ALL ABOUT ASYNCTASK
     private class insert extends AsyncTask<Notes, Void, Void>{
 
@@ -92,4 +94,5 @@ public class NotesModel extends AndroidViewModel {
             return null;
         }
     }
+
 }

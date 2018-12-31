@@ -10,16 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
-            android:title="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".activity.IntroActivity"
+            android:title="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:parentActivityName=".activity.MainActivity" android:name=".activity.NoteActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
+        <activity
+            android:name=".activity.NoteActivity"
+            android:parentActivityName=".activity.MainActivity" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.AboutActivity" android:parentActivityName=".activity.MainActivity"></activity>
     </application>
 
 </manifest>

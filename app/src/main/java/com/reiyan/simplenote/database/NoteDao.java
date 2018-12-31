@@ -23,6 +23,12 @@ public interface NoteDao {
     @Query("SELECT * FROM notes WHERE id=:noteId")
     LiveData<Notes> findById(int noteId);
 
+    @Query("SELECT * FROM notes WHERE pin=:pin")
+    LiveData<Notes> findByPin(int pin);
+
+    @Query("SELECT * FROM notes WHERE title LIKE :key OR note LIKE :key ORDER BY id DESC")
+    LiveData<List<Notes>> findByKey(String key);
+
     @Update
     void updateData(Notes notes);
 
